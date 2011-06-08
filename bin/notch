@@ -1,0 +1,62 @@
+#!/usr/bin/env node
+
+
+/**
+ * Module dependecies.
+ */
+
+var notch = require('../index.js')
+  , fs = require('fs');
+
+/**
+ * Notch Version
+ */
+
+var version = '0.0.0';
+
+/**
+ * Notch Help
+ */
+
+var help = 'RTFS';
+
+/**
+ * Argument Aliases
+ */
+
+var aliases = { 
+  '-h': 'help',
+  '--help': 'help',
+  '-v': 'version',
+  '--version': 'version'
+};
+
+
+/**
+ * Get args and replace aliases
+ */
+
+var args = process.argv.slice(2).map(function (arg) {
+  return aliases[arg] || arg;
+});
+
+/**
+ * The first arg is a  Notch command 
+ */
+
+var command = args.shift();
+
+switch (command) {
+  case 'version':
+    console.log(version);
+    process.exit(1);
+    break;
+
+  case 'help':
+    console.log(help);
+    process.exit(1);
+    break;
+
+  default:
+    break;
+}

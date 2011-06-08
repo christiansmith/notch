@@ -1,0 +1,17 @@
+{
+  "author": "Christian Smith <smith@anvil.io> (http://anvil.io)",
+  "name": "notch",
+  "description": "Node(.js) on the Couch(DB)",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "bin": { "notch": "./bin/notch" },
+  "main": "index",
+  "directories": {
+    "lib": "."
+  },
+  "engines": {
+    "node": "*"
+  }
+}
