@@ -6,7 +6,21 @@
  */
 
 var notch = require('../index.js')
+  , path = require('path')
   , fs = require('fs');
+
+// temporary for development
+// this needs to be read from a file
+var config = {
+  targets: {
+    development: {
+      url: 'http://localhost:5984/notch',
+      auth: 'user:pass'
+    }  
+  }
+};
+
+var client = notch.createClient(config);
 
 /**
  * Notch Version
@@ -57,6 +71,20 @@ switch (command) {
     process.exit(1);
     break;
 
+  case 'push':
+    var appname = args.shift()
+      , apppath = path.join(process.cwd(), appname)
+      , app = require(apppath)
+      , targetname = args.shift();
+
+    // where should this be called?
+    app.revision();
+
+    client.push(app, targetname);
+    break;
+
   default:
+    // simplify calling client commands here like so?
+    // client.[cmd].apply(client, args);
     break;
 }

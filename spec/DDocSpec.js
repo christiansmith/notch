@@ -22,6 +22,27 @@ describe('DDoc', function () {
     expect(ddoc.rewrites).toEqual([]);
   });
 
+  it('should have a revision property if it has been pushed');
+
+
+  describe('revision method', function() {
+    var rev_json, rev_file;
+
+    beforeEach(function() {
+      rev_json = { "ok": "true", "id": "_design/id", "rev": "1-12345" };
+      rev_file = new Buffer(JSON.stringify(rev_json));
+
+      spyOn(fs, 'readdirSync').andCallFake(function () { return ['rev.json'] });
+      spyOn(fs, 'readFileSync').andCallFake(function () { return rev_file; });
+
+      ddoc.revision();
+    });
+    
+    it('should add a revision property to ddoc', function() {
+      expect(ddoc._rev).toEqual('1-12345');
+    });
+  });  
+
 
   describe('strfn method', function() {
     var raw;
@@ -238,9 +259,11 @@ describe('DDoc', function () {
     it('should render jade to html');
     it('should render stylus to css');
   });  
-  
+
+  /*
   describe('validate method', function() {
     it('should validate ddoc against a schema')
   });  
-  
+  */
+
 });
