@@ -9,18 +9,11 @@ var notch = require('../index.js')
   , path = require('path')
   , fs = require('fs');
 
-// temporary for development
-// this needs to be read from a file
-var config = {
-  targets: {
-    development: {
-      url: 'http://localhost:5984/notch',
-      auth: 'user:pass'
-    }  
-  }
-};
+/**
+ * Initialize Notch client
+ */
 
-var client = notch.createClient(config);
+var client = notch.createClient();
 
 /**
  * Notch Version
