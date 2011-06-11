@@ -57,4 +57,30 @@ describe('Client', function() {
       expect(target.auth).toBeDefined();
     });
   });  
+
+  describe('params method', function() {
+    beforeEach(function() {
+      params = client.params('PUT', ddoc, 'test');
+    });
+    
+    it('should return an object', function () {
+      expect(typeof params).toEqual('object');
+    });
+
+    describe('return value', function() {
+      it('should have a method property', function() {
+        expect(params.method).toBeDefined();
+      });
+
+      it('should have a uri property', function() {
+        expect(params.uri).toBeDefined();
+      });
+
+      it('should have a json property', function () {
+        expect(params.json).toBeDefined();
+      });
+    });  
+  });  
+  
+
 });
