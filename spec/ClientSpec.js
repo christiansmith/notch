@@ -57,25 +57,4 @@ describe('Client', function() {
       expect(target.auth).toBeDefined();
     });
   });  
-  
-
-  describe('handleServerResponse', function () {
-
-    // mock fs for logs, etc
-
-    it('should update history');
-    it('should record revision');
-    it('should log action');
-    it('should log result');
-
-    describe('called with 201 response', function() {
-      it('should overwrite rev.json');
-      it('should log response');
-    });  
-    
-    describe('called with 409 response', function() {
-      it('should log response');
-    });  
-  });
-
 });
