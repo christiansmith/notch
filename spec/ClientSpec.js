@@ -81,6 +81,14 @@ describe('Client', function() {
       });
     });  
   });  
+
+  describe('push method', function() {
+    // calls this.params and handler.push
+    // see those tests.
+  });  
   
+  describe('draft method', function() {
+    // creates a file based on some json schema or Doc inheriting object.
+  });  
 
 });
