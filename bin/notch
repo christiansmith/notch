@@ -1,29 +1,89 @@
 #!/usr/bin/env node
 
+/**
+ * Module dependencies
+ */
+
+var nopt = require('nopt')
+  , path = require('path')
+  , Env = require('../lib/env');
 
 /**
- * Module dependecies.
+ * Parse options and de(re)structure
  */
+
+var commands = [ 'help'
+               , 'init'
+               , 'push'
+               , 'put'
+               , 'get'
+               , 'del' 
+               ]
+  , types =    { 'directory': path
+               , 'skeleton': String
+               , 'target': String 
+               }
+  , aliases =  { 'd': ['--directory']
+               , 's': ['--skeleton']
+               , 't': ['--target'] 
+               }
+  , options = nopt(types, aliases)
+  , argv = options.argv
+  , arguments = argv.remain;
+
+/**
+ * Remove clutter from options, then append
+ * options to arguments.
+ */
+
+delete options.argv;
+arguments.push(options);
+
+/**
+ * Use the first argument as a command
+ * if it is a member of `commands`.
+ */
+
+if (commands.indexOf(arguments[0]) !== -1) {
+  var command = arguments.shift();  
+}
+
+/**
+ * Initialize the environment
+ */
+
+var env;
+
+(!command || command == 'init')
+  ? env = new Env()
+  : env = new Env('config.json'); // can we add an option for this?
+
+/**
+ * Execute the command
+ */
+
+(command)
+  // ? client[command].apply(client, arguments)
+  ? console.log('We ought to apply: ' + command + ' to client with ' + JSON.stringify(arguments))
+  : console.log('Usage: RTFS');
+
+
+
+console.dir(env);
+
+
+/**
 
 var notch = require('../index.js')
   , path = require('path')
   , fs = require('fs');
 
-/**
- * Notch Version
- */
 
 var version = '0.0.0';
 
-/**
- * Notch Help
- */
 
 var help = 'RTFS';
 
-/**
- * Argument Aliases
- */
 
 var aliases = { 
   '-h': 'help',
@@ -33,17 +93,11 @@ var aliases = {
 };
 
 
-/**
- * Get args and replace aliases
- */
 
 var args = process.argv.slice(2).map(function (arg) {
   return aliases[arg] || arg;
 });
 
-/**
- * The first arg is a  Notch command 
- */
 
 var command = args.shift();
 
@@ -71,7 +125,7 @@ switch (command) {
     client[command].apply(client, args);
     break;
 }
-
+*/
 
 /**
   case 'draft':
