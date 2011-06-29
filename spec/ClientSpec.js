@@ -1,94 +1,60 @@
 var Client = require('../lib/client')
-  , DDoc = require('../lib/ddoc');
+  , Env = require('../lib/env')
+  , config = require('./shared/config')
+  , DDoc = require('../lib/ddoc')
+  , fs = require('fs');
 
 
 describe('Client', function() {
-  var client, ddoc;
 
   beforeEach(function() {
-    config = {
-      targets: {
-        test: {
-          url: 'http://localhost:5984/notch',
-          auth: 'user:pass'
-        }
-      }
-    };
+    env = new Env(config);
     ddoc = new DDoc('app');
-    client = new Client(config);  
+    client = new Client(env);  
   });
 
-  it('should have a config property', function() {
-    expect(client.config).toBeDefined();
-  });
+  describe('env', function() {
+    it('should be defined', function () {
+      expect(client.env).toBeDefined();  
+    });
 
+    it('should be an instance of Environment', function () {
+      expect(client.env instanceof Env).toBeTruthy();
+    });
+  });  
 
-  describe('url method', function() {
-    var url;
-
+  describe('put', function() {
     beforeEach(function() {
-      ddoc._rev = '1-12345'
-      url = client.url(ddoc, 'test');  
+      
     });
     
-    it('should add ddoc._id', function () {
-      expect(url).toContain('_design/app');
+    it('should look up a ddoc from env', function () {
+      
     });
-
-    it('should add ddoc._rev to querystring', function () {
-      expect(url).toContain('?_rev=1-12345');    
+    it('should look up a target from env');
+    it('should build params for the request');
+    it('should call request with params and a callback');    
+  });  
+  
+  describe('put and del', function() {
+    beforeEach(function() {
+      spyOn(console, 'log').andCallFake(function () {});
     });
     
-    it('should add auth', function () {
-      expect(url).toContain('user:pass@localhost');
+    it('should log file not found to console', function() {
+      ['put', 'del'].forEach(function (method) {
+        client[method]('notafile');
+        expect(console.log).toHaveBeenCalledWith('File not found');
+      });
     });
   });  
   
 
-  describe('target method', function() {
-    var target;
-
-    beforeEach(function() {
-      target = client.target('test');  
-    });
-    
-    it('should get a target from config by name', function() {
-      expect(target.url).toBeDefined();
-      expect(target.auth).toBeDefined();
-    });
-  });  
-
-  describe('params method', function() {
-    beforeEach(function() {
-      params = client.params('PUT', ddoc, 'test');
-    });
-    
-    it('should return an object', function () {
-      expect(typeof params).toEqual('object');
-    });
-
-    describe('return value', function() {
-      it('should have a method property', function() {
-        expect(params.method).toBeDefined();
-      });
-
-      it('should have a uri property', function() {
-        expect(params.uri).toBeDefined();
-      });
-
-      it('should have a json property', function () {
-        expect(params.json).toBeDefined();
-      });
-    });  
-  });  
-
-  describe('push method', function() {
-    // calls this.params and handler.push
-    // see those tests.
+  describe('get', function() {
+    it('should get from the server and write to a file');
   });  
   
-  describe('draft method', function() {
-    // creates a file based on some json schema or Doc inheriting object.
+  describe('del', function() {
+    it('should delete from the server and update a file');
   });  
-
 });

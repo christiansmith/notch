@@ -10,12 +10,6 @@ var notch = require('../index.js')
   , fs = require('fs');
 
 /**
- * Initialize Notch client
- */
-
-var client = notch.createClient();
-
-/**
  * Notch Version
  */
 
@@ -64,20 +58,29 @@ switch (command) {
     process.exit(1);
     break;
 
-  case 'push':
-    var appname = args.shift()
-      , apppath = path.join(process.cwd(), appname)
-      , app = require(apppath)
-      , targetname = args.shift();
+  case 'init':
+    var env = new notch.Env()
+      , client = new notch.Client(env);
 
-    // where should this be called?
-    app.revision();
-
-    client.push(app, targetname);
+    client.init.apply(client, args);
     break;
 
   default:
-    // simplify calling client commands here like so?
-    // client.[cmd].apply(client, args);
+    var env = new notch.Env('config.json')
+      , client = new notch.Client(env);
+    client[command].apply(client, args);
     break;
 }
+
+
+/**
+  case 'draft':
+    // ask user to use defaults? 
+    // if no, go through defaults/required and get values from prompt
+    var file = args.shift()
+      , schema = { properties: { foo: { type: 'string', default: 'bar' }}}
+      , doc = notch.Doc.spawn(schema);
+      doc.write(file);
+    break;
+
+*/

@@ -26,14 +26,12 @@ describe('DDoc', function () {
 
 
   describe('revision method', function() {
-    var rev_json, rev_file;
-
     beforeEach(function() {
-      rev_json = { "ok": "true", "id": "_design/id", "rev": "1-12345" };
-      rev_file = new Buffer(JSON.stringify(rev_json));
+      ddoc_json = { "_id": "_design/id", "_rev": "1-12345" };
+      ddoc_file = new Buffer(JSON.stringify(ddoc_json));
 
-      spyOn(fs, 'readdirSync').andCallFake(function () { return ['rev.json'] });
-      spyOn(fs, 'readFileSync').andCallFake(function () { return rev_file; });
+      spyOn(fs, 'readdirSync').andCallFake(function () { return ['data/ddocs/id.json'] });
+      spyOn(fs, 'readFileSync').andCallFake(function () { return ddoc_file; });
 
       ddoc.revision();
     });
@@ -43,6 +41,16 @@ describe('DDoc', function () {
     });
   });  
 
+  describe('filepath method', function() {
+    beforeEach(function() {
+      spyOn(process, 'cwd').andReturn('/project');
+    });
+    
+    it('should compose a filepath for the ddoc', function() {
+      expect(ddoc.filepath()).toEqual('/project/data/ddocs/id.json');
+    });
+  });  
+  
 
   describe('strfn method', function() {
     var raw;

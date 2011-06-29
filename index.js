@@ -1,11 +1,13 @@
-var Client = require('./lib/client')
-  , DDoc = require('./lib/ddoc')
-  , config = require('./lib/config').load('config.json');
+var Env = require('./lib/env')
+  , Client = require('./lib/client')
+  , Doc = require('./lib/doc')
+  , DDoc = require('./lib/ddoc');
 
 module.exports = {
+  Env: Env,
   Client: Client,
-  DDoc: DDoc,
-  config: config
+  Doc: Doc,
+  DDoc: DDoc
 };
 
 module.exports.createDDoc = function (id) {
@@ -13,5 +15,5 @@ module.exports.createDDoc = function (id) {
 };
 
 module.exports.createClient = function () {
-  return new Client(this.config);
+  return new Client(new Env());
 };
