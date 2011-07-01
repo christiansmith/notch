@@ -144,7 +144,6 @@ describe('Doc instance', function() {
     });
   });  
   
-
   describe('validate method', function() {
     beforeEach(function() {
       EDoc = Doc.extend(null, {
@@ -216,12 +215,14 @@ describe('Doc instance', function() {
     });
   });  
 
+  /*
   describe('directory method', function() {
     // what directory is the doc located in?
     // is there a doc.type?
   });  
-  
+  */
 
+  /*
   describe('filepath method', function() {
     it('should return the default location for the document', function() {
       // if there is an _id, filename should reflect the id?
@@ -235,7 +236,7 @@ describe('Doc instance', function() {
     });
     
   });  
-  
+  */
 
   describe('write method', function() {
     beforeEach(function() {
@@ -252,46 +253,87 @@ describe('Doc instance', function() {
     it('should extract attachments and save separately???');
   });  
   
-  describe('get', function() {
+
+  describe('server methods', function() {
+    var response, callback, target;
+
     beforeEach(function() {
       runs(function () {
-        responses = {
-          '/db/uuid-12345': JSON.stringify({ _id: 'uuid-12345', _rev: '1-12345' })
-        };
-        
-        json = JSON.stringify({ _id: 'uuid-12345', _rev: '1-12345' });
+        response = [];
+        callback = jasmine.createSpy();
+        target = { url: 'http://localhost:5984/notch' };
 
-        server = http.createServer(function (req, res) {
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(responses[req.url]);
-        }).listen(1234);
-
-        target = { url: 'http://localhost:1234/db' };
-        
-        callback = { 
-          fn: function (err, res, body) {} 
-        };
-        
-        spyOn(callback, 'fn');
-
-        Doc.get('uuid-12345', target, callback.fn);
+        spyOn(Doc, 'request').andCallFake(function (options, callback) {
+          callback.apply(this, response);
+        });
       });
-      waits(1000);
     });
-
     
-    it('should get a doc from a target', function () {
-      runs(function () {
-        expect(callback.fn.mostRecentCall.args[2]).toEqual(json);
+    describe('get', function() {
+      beforeEach(function() {
+        runs(function () {
+          Doc.get('uuid-12345', target, callback);
+        });
+        waits(100);
       });
-   //   expect(doc instanceof Doc).toBeTruthy();
-   //   expect(doc._id).toBeDefined();
-   //   expect(doc._rev).toBeDefined();
-    });    
-  });  
-  
 
-  it('should put to a couchdb');
-  it('should delete from a couchdb');
-  it('should revert to a previous version');
+      it('should invoke a GET http request', function () {
+        runs(function () {
+          expect(Doc.request).toHaveBeenCalledWith({
+            method: 'GET',
+            uri: target.url + '/uuid-12345'
+          }, callback);
+        });    
+      });
+    });  
+    
+    describe('put', function() {
+      it('should invoke a POST http request if the doc is new', function() {
+        runs(function () {
+          doc = new Doc({ foo: 'bar' });
+          doc.put(target, callback);
+        });
+        waits(100);
+        runs(function () {
+          expect(Doc.request).toHaveBeenCalledWith({
+            method: 'POST',
+            uri: target.url,
+            json: doc
+          }, callback);
+        });
+      });
+
+      it('should invoke a PUT http request if the doc has an _id', function() {
+        runs(function () {
+          doc = new Doc({ _id: 'uuid-12345', _rev: '1-12345', foo: 'bar' });
+          doc.put(target, callback);
+        });
+        waits(100);
+        runs(function () {
+          expect(Doc.request).toHaveBeenCalledWith({
+            method: 'PUT',
+            uri: target.url + '/uuid-12345?_rev=1-12345',
+            json: doc
+          }, callback);
+        });
+      });
+    });  
+
+    describe('del', function() {
+      it('should invoke a DELETE http request', function() {
+        runs(function () {
+          doc = new Doc({_id: 'uuid-12345', _rev: '1-12345', foo: 'bar'});
+          doc.del(target, callback);
+        });
+        waits(100);
+        runs(function () {
+          expect(Doc.request).toHaveBeenCalledWith({
+            method: 'DELETE',
+            uri: target.url + '/uuid-12345?rev=1-12345'
+          }, callback);
+        });
+      });
+    });  
+
+  });  
 });  

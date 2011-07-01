@@ -22,10 +22,12 @@ var commands = [ 'help'
   , types =    { 'directory': path
                , 'skeleton': String
                , 'target': String 
+               , 'help': Boolean
                }
   , aliases =  { 'd': ['--directory']
                , 's': ['--skeleton']
                , 't': ['--target'] 
+               , 'h': ['--help']
                }
   , options = nopt(types, aliases)
   , argv = options.argv
