@@ -6,6 +6,7 @@
 
 var nopt = require('nopt')
   , path = require('path')
+  , Client = require('../lib/client')
   , Env = require('../lib/env');
 
 /**
@@ -13,20 +14,22 @@ var nopt = require('nopt')
  */
 
 var commands = [ 'help'
-               , 'init'
-               , 'push'
-               , 'put'
-               , 'get'
-               , 'del' 
+               //, 'init'
+               //, 'push'
+               , 'publish'
+               , 'fetch'
+               , 'retract' 
                ]
   , types =    { 'directory': path
                , 'skeleton': String
                , 'target': String 
+               , 'file': path
                , 'help': Boolean
                }
   , aliases =  { 'd': ['--directory']
                , 's': ['--skeleton']
                , 't': ['--target'] 
+               , 'f': ['--file']
                , 'h': ['--help']
                }
   , options = nopt(types, aliases)
@@ -54,24 +57,24 @@ if (commands.indexOf(arguments[0]) !== -1) {
  * Initialize the environment
  */
 
-var env;
+var env, client;
 
 (!command || command == 'init')
   ? env = new Env()
   : env = new Env('config.json'); // can we add an option for this?
+
+client = new Client(env);
 
 /**
  * Execute the command
  */
 
 (command)
-  // ? client[command].apply(client, arguments)
-  ? console.log('We ought to apply: ' + command + ' to client with ' + JSON.stringify(arguments))
+  ? client[command].apply(client, arguments)
+  //? console.log('We ought to apply: ' + command + ' to client with ' + JSON.stringify(arguments))
   : console.log('Usage: RTFS');
 
 
-
-console.dir(env);
 
 
 /**

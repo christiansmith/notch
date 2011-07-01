@@ -81,6 +81,11 @@ describe('Env', function() {
       });
     });
     
+    it('should return a default target', function() {
+      expect(env.getTarget().url).toContain('localhost');
+    });
+    
+    
     it('should access ddocs', function () {
       envs.forEach(function (env) {
         expect(env.getDDoc('blog') instanceof DDoc).toBeTruthy();

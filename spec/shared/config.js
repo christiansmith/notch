@@ -3,7 +3,10 @@ var DDoc = require('../../lib/ddoc')
 
 module.exports = {
   targets: {
-    dev: { url: 'http://localhost:5984/dev' },
+    dev: { 
+      url: 'http://localhost:5984/dev', 
+      default: true     
+    },
     prod: {
       url: 'http://notch.couchone.com/prod',
       auth: 'user:password'
