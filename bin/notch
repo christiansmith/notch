@@ -15,7 +15,7 @@ var nopt = require('nopt')
 
 var commands = [ 'help'
                //, 'init'
-               //, 'push'
+               , 'push'
                , 'publish'
                , 'fetch'
                , 'retract' 

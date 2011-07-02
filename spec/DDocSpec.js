@@ -1,4 +1,5 @@
 var DDoc = require('../lib/ddoc.js')
+  , path = require('path')
   , fs = require('fs');
 
 describe('DDoc', function () {
@@ -30,6 +31,7 @@ describe('DDoc', function () {
       ddoc_json = { "_id": "_design/id", "_rev": "1-12345" };
       ddoc_file = new Buffer(JSON.stringify(ddoc_json));
 
+      spyOn(path, 'existsSync').andReturn(true);
       spyOn(fs, 'readdirSync').andCallFake(function () { return ['data/ddocs/id.json'] });
       spyOn(fs, 'readFileSync').andCallFake(function () { return ddoc_file; });
 
@@ -40,6 +42,25 @@ describe('DDoc', function () {
       expect(ddoc._rev).toEqual('1-12345');
     });
   });  
+
+  describe('put method', function() {
+    beforeEach(function() {
+      runs(function () {
+        ddoc = new DDoc();
+        spyOn(ddoc, 'revision');
+        spyOn(DDoc, 'request');
+        ddoc.put({ url: 'http://localhost:5984/notch' }, function () {});
+      });
+      waits(10);
+    });
+    
+    it('should read _rev before calling put of superclass', function() {
+      runs(function () {
+        expect(ddoc.revision).toHaveBeenCalled();
+      });
+    });
+  });  
+  
 
   describe('filepath method', function() {
     beforeEach(function() {

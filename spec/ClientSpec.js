@@ -58,20 +58,6 @@ describe('Client', function() {
       });
     });
   });  
-
-  
-  describe('publish and retract', function() {
-    beforeEach(function() {
-      spyOn(console, 'log');
-    });
-    
-    it('should log file not found to console', function() {
-      ['publish', 'retract'].forEach(function (method) {
-        client[method]('notafile');
-        expect(console.log).toHaveBeenCalledWith('File not found');
-      });
-    });
-  });  
   
 
   describe('fetch 200', function() {
@@ -161,9 +147,66 @@ describe('Client', function() {
         expect(written).not.toContain('1-12345');
         expect(written).toContain('"foo": "bar"');
       });
-
     });
     
     // expect logs to have been written
   });  
+
+  
+  describe('publish and retract', function() {
+    beforeEach(function() {
+      spyOn(console, 'log');
+    });
+    
+    it('should log file not found to console', function() {
+      ['publish', 'retract'].forEach(function (method) {
+        client[method]('notafile');
+        expect(console.log).toHaveBeenCalledWith('File not found');
+      });
+    });
+  });  
+
+
+  describe('push 201', function() {
+    beforeEach(function () {
+      runs(function () {
+        spyOn(console, 'log');
+        spyOn(fs, 'writeFileSync');
+        spyOn(Doc, 'request').andCallFake(function (options, callback) {
+          callback(null, {statusCode:201}, JSON.stringify({
+            ok: true,
+            id: '_design/blog',
+            rev: '1-12345'
+          }));
+        });
+        client.push('blog', { target: 'dev' });
+      });
+      waits(10);
+    });
+
+    // expect response to be logged
+
+    it('should write ddoc json to a file after push', function() {
+      runs(function () {
+        var written = fs.writeFileSync.mostRecentCall.args[1];
+        expect(written).toContain('"_id": "_design/blog"');
+        expect(written).toContain('"_rev": "1-12345"');
+        expect(written).toContain('"shows": {}');
+      });
+    });
+  });  
+  
+  describe('push', function() {
+    beforeEach(function() {
+      spyOn(console, 'log');
+      spyOn(Doc, 'request');
+      client.push('foo', {});
+    });
+
+    it('should log unknown design document', function() {
+      expect(console.log).toHaveBeenCalledWith('foo is not a known design document');
+    });
+  });  
+  
+
 });
