@@ -23,6 +23,10 @@ module.exports = {
         }
       }        
     })
+  },
+  skeletons: {
+    default: '/path/to/default/',
+    custom: '/path/to/custom/'
   }
 };
 

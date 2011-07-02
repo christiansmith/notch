@@ -3,6 +3,7 @@ var Client = require('../lib/client')
   , config = require('./shared/config')
   , Doc = require('../lib/doc')
   , DDoc = require('../lib/ddoc')
+  , child_process = require('child_process')
   , path = require('path')
   , fs = require('fs');
 
@@ -23,6 +24,63 @@ describe('Client', function() {
       expect(client.env instanceof Env).toBeTruthy();
     });
   });  
+
+  describe('init', function() {
+    beforeEach(function() {
+      init = function (options) {
+        runs(function () {
+          spyOn(console, 'log');
+          spyOn(child_process, 'exec').andCallFake(function (command, callback){
+            callback();  
+          });
+          client.init(options);
+        });
+        waits(10);
+        runs(function () {
+          command = child_process.exec.mostRecentCall.args[0];
+        });
+      };
+    });
+    
+    it('should copy a default skeleton if not specified', function() {
+      init({});
+      runs(function () {
+        expect(command).toContain('/path/to/default/');
+      });
+    });
+    
+    it('should copy to current directory if not specified', function() {
+      init({});
+      runs(function () {
+        expect(command).toContain(env.root);
+      })
+    });
+    
+    it('should copy a custom skeleton if specified', function() {
+      init({ skeleton: 'custom' });
+      runs(function () {
+        expect(command).toContain('/path/to/custom/');
+      });
+    });
+    
+    it('should copy to a specified directory', function() {
+      init({ directory: '/path/to/project' });
+      runs(function () {
+        expect(command).toContain('/path/to/project');
+      });
+    });
+
+    it('should log success', function () {
+      init({ skeleton: 'custom', directory: '/path/to/project'});
+      runs(function () {
+        message = console.log.mostRecentCall.args[0];
+        expect(message).toContain('Created a new project');
+        expect(message).toContain('/path/to/custom/');
+        expect(message).toContain('/path/to/project');
+      });
+    });
+  });  
+  
 
   describe('publish 201', function() {
     beforeEach(function () {
