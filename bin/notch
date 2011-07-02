@@ -25,12 +25,14 @@ var commands = [ 'help'
                , 'target': String 
                , 'file': path
                , 'help': Boolean
+               , 'version': Boolean
                }
   , aliases =  { 'd': ['--directory']
                , 's': ['--skeleton']
                , 't': ['--target'] 
                , 'f': ['--file']
                , 'h': ['--help']
+               , 'v': ['--version']
                }
   , options = nopt(types, aliases)
   , argv = options.argv
@@ -69,68 +71,10 @@ client = new Client(env);
  * Execute the command
  */
 
-(command)
+(command && !options.help)
   ? client[command].apply(client, arguments)
-  //? console.log('We ought to apply: ' + command + ' to client with ' + JSON.stringify(arguments))
-  : console.log('Usage: RTFS');
+  : client.info(command, options); 
 
-
-
-
-/**
-
-var notch = require('../index.js')
-  , path = require('path')
-  , fs = require('fs');
-
-
-var version = '0.0.0';
-
-
-var help = 'RTFS';
-
-
-var aliases = { 
-  '-h': 'help',
-  '--help': 'help',
-  '-v': 'version',
-  '--version': 'version'
-};
-
-
-
-var args = process.argv.slice(2).map(function (arg) {
-  return aliases[arg] || arg;
-});
-
-
-var command = args.shift();
-
-switch (command) {
-  case 'version':
-    console.log(version);
-    process.exit(1);
-    break;
-
-  case 'help':
-    console.log(help);
-    process.exit(1);
-    break;
-
-  case 'init':
-    var env = new notch.Env()
-      , client = new notch.Client(env);
-
-    client.init.apply(client, args);
-    break;
-
-  default:
-    var env = new notch.Env('config.json')
-      , client = new notch.Client(env);
-    client[command].apply(client, args);
-    break;
-}
-*/
 
 /**
   case 'draft':
