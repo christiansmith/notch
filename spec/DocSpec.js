@@ -89,7 +89,8 @@ describe('Doc', function() {
           a: { type: 'string', default: 'alpha' },
           b: { type: 'object', default: {} },
           c: { type: 'number', default: 3 },
-          d: { type: 'array' }
+          d: { type: 'array' },
+          e: { type: 'string', default: '' }
         }
       };
     });
@@ -100,6 +101,7 @@ describe('Doc', function() {
       expect(doc.b).toEqual({});
       expect(doc.c).toEqual(3);
       expect(doc.d).not.toBeDefined();
+      expect(doc.e).toEqual('');
     });
 
     it('should generate a new Doc from a static schema property', function () {

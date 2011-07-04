@@ -81,6 +81,57 @@ describe('Client', function() {
     });
   });  
   
+  describe('draft', function() {
+    var draft, file;
+    beforeEach(function() {
+      spyOn(console, 'log');
+      spyOn(fs, 'writeFileSync');
+    });
+    
+    
+    it('should prefix "data/"" to file argument has no directory', function () {
+      client.draft('foo', {});
+      file = fs.writeFileSync.mostRecentCall.args[0];
+      expect(file).toContain('data/');
+    });
+
+    it('should append .json to file argument if there is no extension', function() {
+      client.draft('foo', {});
+      file = fs.writeFileSync.mostRecentCall.args[0];
+      expect(file).toContain('foo.json');
+    });
+
+    it('should override file argument with options', function() {
+      client.draft(undefined, { file: '/path/to/file.ext' });
+      file = fs.writeFileSync.mostRecentCall.args[0];
+      expect(file).toContain('/path/to/file.ext');
+    });
+    
+    it('should spawn a document from a schema', function() {
+      client.draft('foo', { model: 'post' });
+      json = fs.writeFileSync.mostRecentCall.args[1];
+      expect(json).toContain('"title": ""');
+    });
+    
+    // should write to a default file for the doc type
+    // should prompt to use default
+    // should prompt user for initial values
+    
+    it('should log message to console', function() {
+      client.draft('foo', {});
+      message = console.log.mostRecentCall.args[0];
+      expect(message).toContain('data/foo.json')
+      expect(message).toContain('document');
+    });
+
+    it('should log type of document in message', function () {
+      client.draft('foo', { model: 'post' });
+      message = console.log.mostRecentCall.args[0];
+      expect(message).toContain('post');
+    });
+    
+  });  
+  
 
   describe('publish 201', function() {
     beforeEach(function () {

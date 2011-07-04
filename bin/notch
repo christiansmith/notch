@@ -16,6 +16,7 @@ var nopt = require('nopt')
 var commands = [ 'help'
                , 'init'
                , 'push'
+               , 'draft'
                , 'publish'
                , 'fetch'
                , 'retract' 
@@ -31,6 +32,7 @@ var commands = [ 'help'
                , 's': ['--skeleton']
                , 't': ['--target'] 
                , 'f': ['--file']
+               , 'm': ['--model']
                , 'h': ['--help']
                , 'v': ['--version']
                }

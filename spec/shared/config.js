@@ -1,6 +1,14 @@
 var DDoc = require('../../lib/ddoc')
   , Doc = require('../../lib/doc')
 
+var Post = Doc.extend(null, {
+  schema: {
+    properties: {
+      title: { type: 'string', default: '' }
+    }
+  } 
+});
+
 module.exports = {
   targets: {
     dev: { 
@@ -16,13 +24,7 @@ module.exports = {
     blog: new DDoc('blog')
   },
   models: {
-    post: Doc.extend(null, {
-      schema: {
-        properties: {
-          title: { type: 'string' }
-        }
-      }        
-    })
+    post: Post
   },
   skeletons: {
     default: '/path/to/default/',
