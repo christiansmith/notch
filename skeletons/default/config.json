@@ -1,0 +1,12 @@
+{
+  "targets": {
+    "development": {
+      "url": "http://localhost:5984/notch",
+      "default": true
+    }
+  },
+  "ddocs": {
+    "app": "ddocs/app/ddoc.js"
+  },
+  "models": "lib/models.js"
+}

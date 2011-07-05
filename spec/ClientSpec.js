@@ -95,6 +95,21 @@ describe('Client', function() {
       expect(file).toContain('data/');
     });
 
+    it('should optionally prefix document type to file argument', function () {
+      client.draft('foo', { model: 'post' });
+      file = fs.writeFileSync.mostRecentCall.args[0];
+      expect(file).toContain('data/post/');
+    });
+
+    /*
+    it('should make a directory for doc.type if non exists', function () {
+      spyOn(path, 'existsSync').andReturn(false);
+      spyOn(fs, 'mkdirSync');
+      client.draft('foo', { model: 'post' });
+      expect(fs.mkdirSync).toHaveBeenCalledWith('data/post');
+    });
+    */
+
     it('should append .json to file argument if there is no extension', function() {
       client.draft('foo', {});
       file = fs.writeFileSync.mostRecentCall.args[0];
@@ -113,7 +128,6 @@ describe('Client', function() {
       expect(json).toContain('"title": ""');
     });
     
-    // should write to a default file for the doc type
     // should prompt to use default
     // should prompt user for initial values
     
