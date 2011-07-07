@@ -81,6 +81,30 @@ describe('Client', function() {
       });
     });
   });  
+
+  describe('init failure', function() {
+    beforeEach(function() {
+      init = function (options) {
+        runs(function () {
+          spyOn(console, 'log');
+          spyOn(child_process, 'exec').andCallFake(function (command, callback){
+            callback(null, null, 'this is an error');  
+          });
+          client.init(options);
+        });
+        waits(10);
+      }
+    });
+    
+    it('should log stderr', function() {
+      init({ directory: 'non/existing/dir' });
+      runs(function () {
+        message = console.log.mostRecentCall.args[0];
+        expect(message).toContain('this is an error');
+      });
+    });
+  });  
+  
   
   describe('draft', function() {
     var draft, file;
