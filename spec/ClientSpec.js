@@ -3,6 +3,7 @@ var Client = require('../lib/client')
   , config = require('./shared/config')
   , Doc = require('../lib/doc')
   , DDoc = require('../lib/ddoc')
+  , prompt = require('prompt')
   , child_process = require('child_process')
   , path = require('path')
   , fs = require('fs');
@@ -86,8 +87,13 @@ describe('Client', function() {
     beforeEach(function() {
       spyOn(console, 'log');
       spyOn(fs, 'writeFileSync');
+      spyOn(prompt, 'get').andCallFake(function (msg, callback) {
+        // pass the callback something based on msg
+        if (msg.name == 'useDefaults') {
+          callback(null, { useDefaults: 'yes' });
+        }
+      });
     });
-    
     
     it('should prefix "data/"" to file argument has no directory', function () {
       client.draft('foo', {});
@@ -128,9 +134,12 @@ describe('Client', function() {
       expect(json).toContain('"title": ""');
     });
     
-    // should prompt to use default
-    // should prompt user for initial values
-    
+    it('it should prompt to use defaults', function() {
+      client.draft('foo', { model: 'post' });
+      msg = prompt.get.mostRecentCall.args[0].message
+      expect(msg).toContain('Use defaults for');
+    });
+
     it('should log message to console', function() {
       client.draft('foo', {});
       message = console.log.mostRecentCall.args[0];
@@ -143,7 +152,28 @@ describe('Client', function() {
       message = console.log.mostRecentCall.args[0];
       expect(message).toContain('post');
     });
+  });  
+  
+  describe('draft from schema', function() {
+    beforeEach(function() {
+      spyOn(console, 'log');
+      spyOn(fs, 'writeFileSync');
+      spyOn(prompt, 'get').andCallFake(function (msg, callback) {
+        if (msg.name == 'useDefaults') {
+          callback(null, { useDefaults: 'no' });
+        }
+      });
+    });
     
+    it('should prompt for values from schema properties', function() {
+      client.draft('foo', { model: 'post' });
+      msg = JSON.stringify(prompt.get.mostRecentCall.args[0]);
+      console.log(msg)
+      expect(msg).toContain('"name":"title"');
+      expect(msg).toContain('"default":""');
+      expect(msg).toContain('"name":"author"');
+      expect(msg).toContain('"default":"some dude"');
+    });
   });  
   
 

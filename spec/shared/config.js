@@ -4,7 +4,8 @@ var DDoc = require('../../lib/ddoc')
 var Post = Doc.extend(null, {
   schema: {
     properties: {
-      title: { type: 'string', default: '' }
+      title: { type: 'string', default: '' },
+      author: { type: 'string', default: 'some dude' }
     }
   } 
 });
@@ -18,6 +19,10 @@ module.exports = {
     prod: {
       url: 'http://notch.couchone.com/prod',
       auth: 'user:password'
+    },
+    secure: {
+      url: 'http://notch.example.com/secure',
+      user: 'user'
     }
   },
   ddocs: {

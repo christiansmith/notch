@@ -2,6 +2,7 @@ var Env = require('../lib/env')
   , Doc = require('../lib/doc')
   , DDoc = require('../lib/ddoc')
   , config = require('./shared/config')
+  , prompt = require('prompt')
   , fs = require('fs');
 
 
@@ -77,14 +78,17 @@ describe('Env', function() {
   describe('instance', function() {
     it('should access targets', function() {
       envs.forEach(function (env) {
-        expect(env.getTarget('dev').url).toContain('localhost');
+        env.getTarget('dev', function (err, target) {
+          expect(target.url).toContain('localhost');
+        });
       });
     });
     
     it('should return a default target', function() {
-      expect(env.getTarget().url).toContain('localhost');
+      env.getTarget(undefined, function (err, target) {
+        expect(target.url).toContain('localhost');
+      });
     });
-    
     
     it('should access ddocs', function () {
       envs.forEach(function (env) {
