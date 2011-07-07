@@ -31,6 +31,8 @@ describe('Client', function() {
       init = function (options) {
         runs(function () {
           spyOn(console, 'log');
+          spyOn(path, 'existsSync').andReturn(false);
+          spyOn(fs, 'readdirSync').andReturn([]);
           spyOn(child_process, 'exec').andCallFake(function (command, callback){
             callback();  
           });
@@ -82,6 +84,45 @@ describe('Client', function() {
     });
   });  
 
+  describe('init into existing and non-empty directory', function() {
+    beforeEach(function() {
+      init = function (options) {
+        runs(function () {
+          spyOn(console, 'log');
+          spyOn(path, 'existsSync').andReturn(true);
+          spyOn(fs, 'readdirSync').andReturn(['bogus-file.js']);
+          spyOn(child_process, 'exec').andCallFake(function (command, callback){
+            callback();  
+          });
+          spyOn(prompt, 'get').andCallFake(function (message, callback) {
+            callback(null, { confirmation: options.confirm });
+          });
+          client.init(options);
+        });
+        waits(10);
+        runs(function () {
+          message = console.log.mostRecentCall.args[0];
+        });
+      };
+    });
+
+    it('should prompt user to continue', function() {
+      init({ directory: 'non/empty/dir', confirm: 'yes' });
+      runs(function () {
+        expect(message).toContain('Created a new project');
+        
+      });
+    });
+    
+    it('should abort unless confirmed', function() {
+      init({ directory: 'non/empty/dir', confirm: 'no' });
+      runs(function () {
+        expect(message).toContain('Init aborted.');
+        
+      });
+    });
+  });  
+  
   describe('init failure', function() {
     beforeEach(function() {
       init = function (options) {
