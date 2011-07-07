@@ -93,16 +93,27 @@ describe('Client', function() {
           client.init(options);
         });
         waits(10);
+        runs(function () {
+          message = console.log.mostRecentCall.args[0];
+        });
       }
     });
     
     it('should log stderr', function() {
       init({ directory: 'non/existing/dir' });
       runs(function () {
-        message = console.log.mostRecentCall.args[0];
         expect(message).toContain('this is an error');
       });
     });
+
+    it('should log undefined skeleton', function() {
+      init({ skeleton: 'undef' });
+      runs(function () {
+        expect(message).toContain('There is no undef skeleton in your closet');
+        
+      });
+    });
+    
   });  
   
   
