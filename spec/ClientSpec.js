@@ -110,7 +110,6 @@ describe('Client', function() {
       init({ directory: 'non/empty/dir', confirm: 'yes' });
       runs(function () {
         expect(message).toContain('Created a new project');
-        
       });
     });
     
@@ -163,6 +162,7 @@ describe('Client', function() {
     beforeEach(function() {
       spyOn(console, 'log');
       spyOn(fs, 'writeFileSync');
+      spyOn(path, 'existsSync').andReturn(false);
       spyOn(prompt, 'get').andCallFake(function (msg, callback) {
         // pass the callback something based on msg
         if (msg.name == 'useDefaults') {
@@ -230,6 +230,44 @@ describe('Client', function() {
     });
   });  
   
+  describe('draft overwrite', function() {
+    beforeEach(function() {
+      init = function (options) {
+        runs(function () {
+          spyOn(console, 'log');
+          spyOn(fs, 'writeFileSync');
+          spyOn(path, 'existsSync').andReturn(true);
+          spyOn(prompt, 'get').andCallFake(function (message, callback) {
+            callback(null, { confirmation: options.confirm });
+          });
+          client.draft('data/exists.json', options);
+        });
+        waits(10);
+        runs(function () {
+          message = console.log.mostRecentCall.args[0];
+        });
+      };
+    });
+
+    it('should prompt user to overwrite', function() {
+      init({ confirm: 'yes' });
+      runs(function () {
+        expect(message).toContain('Wrote');
+      });
+    });
+    
+    it('should abort if not confirmed', function() {
+      init({ confirm: 'no' });
+      runs(function () {
+        expect(message).toContain('Draft aborted.');
+        
+      });
+    });
+    
+    
+  });  
+  
+
   describe('draft from schema', function() {
     beforeEach(function() {
       spyOn(console, 'log');
