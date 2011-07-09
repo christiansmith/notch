@@ -289,6 +289,85 @@ describe('DDoc', function () {
     it('should render stylus to css');
   });  
 
+
+  describe('load attachments', function() {
+    beforeEach(function() {
+      mockfs = {
+        '_attachments': {
+          'index.html': '<!DOCTYPE html><html></html>',
+          'js': {
+            'scripts.js': 'module.exports = {}'
+          }
+        }
+      }
+
+      function traverse (pth, dir) {
+        var nodes = pth.split('/')
+          , current = nodes.shift();
+
+        if (nodes.length == 0) { 
+          return dir[current]; 
+        } else { 
+          return traverse(nodes.join('/'), dir[current]); 
+        }
+      }
+
+      function readdirSync(pth) {
+        var directory = traverse(pth, mockfs)
+          , listings = [];
+
+        for (listing in directory) {
+          listings.push(listing);
+        }
+
+        return listings;
+      }
+
+      function statSync(pth) {
+        var directory = traverse(pth, mockfs);
+        return (function (dir) {
+          return {
+            isFile: function () {
+              return (typeof dir == 'string');
+            },
+            isDirectory: function () {
+              return (typeof dir == 'object' && !!dir);
+            }
+          }
+        })(directory);
+      }
+
+      function readFileSync (pth) {
+        var file = traverse(pth, mockfs);
+        return new Buffer(file);
+      }
+      
+      spyOn(fs, 'readdirSync').andCallFake(readdirSync);
+
+      spyOn(fs, 'statSync').andCallFake(statSync);
+
+      spyOn(fs, 'readFileSync').andCallFake(readFileSync);
+
+      spyOn(process, 'chdir');
+    });
+    
+    describe('attachment', function() {
+      beforeEach(function() {
+        ddoc.load('_attachments', { attachments: true });
+      });
+
+      it('should be identified by a relative path', function () {
+//        expect(ddoc._attachments['js/scripts.js']).toBeDefined();
+      });
+
+      it('should be have a content_type');
+
+      it('should have data encoded as base64');
+    });   
+  });  
+  
+
+
   /*
   describe('validate method', function() {
     it('should validate ddoc against a schema')
