@@ -225,51 +225,8 @@ describe('DDoc', function () {
         }
       }
 
-      function traverse (pth, dir) {
-        var nodes = pth.split('/')
-          , current = nodes.shift();
-
-        if (nodes.length == 0) { 
-          return dir[current]; 
-        } else { 
-          return traverse(nodes.join('/'), dir[current]); 
-        }
-      }
-
-      function readdirSync(pth) {
-        var directory = traverse(pth, mockfs)
-          , listings = [];
-
-        for (listing in directory) {
-          listings.push(listing);
-        }
-
-        return listings;
-      }
-
-      function statSync(pth) {
-        var directory = traverse(pth, mockfs);
-        return (function (dir) {
-          return {
-            isFile: function () {
-              return (typeof dir == 'string');
-            },
-            isDirectory: function () {
-              return (typeof dir == 'object' && !!dir);
-            }
-          }
-        })(directory);
-      }
-
-      function readFileSync (pth) {
-        var file = traverse(pth, mockfs);
-        return new Buffer(file);
-      }
-      
       spyOn(fs, 'readdirSync').andCallFake(readdirSync);
-
       spyOn(fs, 'statSync').andCallFake(statSync);
-
       spyOn(fs, 'readFileSync').andCallFake(readFileSync);
 
       ddoc.load('dir');
@@ -301,63 +258,20 @@ describe('DDoc', function () {
         }
       }
 
-      function traverse (pth, dir) {
-        var nodes = pth.split('/')
-          , current = nodes.shift();
-
-        if (nodes.length == 0) { 
-          return dir[current]; 
-        } else { 
-          return traverse(nodes.join('/'), dir[current]); 
-        }
-      }
-
-      function readdirSync(pth) {
-        var directory = traverse(pth, mockfs)
-          , listings = [];
-
-        for (listing in directory) {
-          listings.push(listing);
-        }
-
-        return listings;
-      }
-
-      function statSync(pth) {
-        var directory = traverse(pth, mockfs);
-        return (function (dir) {
-          return {
-            isFile: function () {
-              return (typeof dir == 'string');
-            },
-            isDirectory: function () {
-              return (typeof dir == 'object' && !!dir);
-            }
-          }
-        })(directory);
-      }
-
-      function readFileSync (pth) {
-        var file = traverse(pth, mockfs);
-        return new Buffer(file);
-      }
-      
       spyOn(fs, 'readdirSync').andCallFake(readdirSync);
-
       spyOn(fs, 'statSync').andCallFake(statSync);
-
       spyOn(fs, 'readFileSync').andCallFake(readFileSync);
-
       spyOn(process, 'chdir');
     });
     
     describe('attachment', function() {
       beforeEach(function() {
-        ddoc.load('_attachments', { attachments: true });
+        ddoc = new DDoc('wtf');
       });
 
       it('should be identified by a relative path', function () {
-//        expect(ddoc._attachments['js/scripts.js']).toBeDefined();
+        ddoc.load('_attachments', { attachments: true });
+//        expect(ddoc._attachments['index.html']).toBeDefined();
       });
 
       it('should be have a content_type');
@@ -375,3 +289,52 @@ describe('DDoc', function () {
   */
 
 });
+
+
+
+/**
+ * FILESYSTEM FAKING HELPERS
+ */
+
+function traverse (pth, dir) {
+  //if (pth == '.') pth = '_attachments';
+  var nodes = pth.split('/')
+    , current = nodes.shift();
+
+  if (nodes.length == 0) { 
+    return dir[current]; 
+  } else { 
+    return traverse(nodes.join('/'), dir[current]); 
+  }
+}
+
+function readdirSync(pth) {
+  var directory = traverse(pth, mockfs)
+    , listings = [];
+
+  for (listing in directory) {
+    listings.push(listing);
+  }
+
+  return listings;
+}
+
+function statSync(pth) {
+  var directory = traverse(pth, mockfs);
+  return (function (dir) {
+    return {
+      isFile: function () {
+        return (typeof dir == 'string');
+      },
+      isDirectory: function () {
+        return (typeof dir == 'object' && !!dir);
+      }
+    }
+  })(directory);
+}
+
+function readFileSync (pth) {
+  var file = traverse(pth, mockfs);
+  return new Buffer(file);
+}
+
