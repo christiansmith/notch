@@ -246,11 +246,42 @@ describe('DDoc', function () {
     it('should render stylus to css');
   });  
 
+  describe('load modules', function() {
+    beforeEach(function() {
+      mockfs = {
+        'dir': {
+          'file1.js': 'Contents of file1.js',
+          'subdir': {
+            'file2.js': 'Contents of file2.js'
+          }
+        }
+      }
+
+      spyOn(fs, 'readdirSync').andCallFake(readdirSync);
+      spyOn(fs, 'statSync').andCallFake(statSync);
+      spyOn(fs, 'readFileSync').andCallFake(readFileSync);
+
+      ddoc.load('dir');
+    });
+
+    it('should build object chain from file path', function () {
+      expect(ddoc.dir.subdir).toBeDefined();
+    });
+
+    it('should remove file extension from property name', function () {
+      expect(ddoc.dir.file1).toBeDefined();
+    });
+
+    it('should add file contents to a ddoc property as a string', function () {
+      expect(typeof ddoc.dir.subdir.file2).toEqual('string');
+    });
+  });  
+  
 
   describe('load attachments', function() {
     beforeEach(function() {
       mockfs = {
-        '_attachments': {
+        '.': {
           'index.html': '<!DOCTYPE html><html></html>',
           'js': {
             'scripts.js': 'module.exports = {}'
@@ -262,22 +293,18 @@ describe('DDoc', function () {
       spyOn(fs, 'statSync').andCallFake(statSync);
       spyOn(fs, 'readFileSync').andCallFake(readFileSync);
       spyOn(process, 'chdir');
+
+//      console.log('LOADING ATTACHMENTS!!!!!!!!!!!!!!!!!!!!!!');
+//      ddoc.load({ attachments: '_attachments' });
     });
     
-    describe('attachment', function() {
-      beforeEach(function() {
-        ddoc = new DDoc('wtf');
-      });
+    it('should use the filepath as a property name', function () {
+//      expect(ddoc._attachments['index.html']).toBeDefined();  
+    });
 
-      it('should be identified by a relative path', function () {
-        ddoc.load('_attachments', { attachments: true });
-//        expect(ddoc._attachments['index.html']).toBeDefined();
-      });
-
-      it('should be have a content_type');
-
-      it('should have data encoded as base64');
-    });   
+    //it('should assign an object');
+    //it('should set content_type of the attachment');
+    //it('should encode data as a base64 string');
   });  
   
 
@@ -297,7 +324,6 @@ describe('DDoc', function () {
  */
 
 function traverse (pth, dir) {
-  //if (pth == '.') pth = '_attachments';
   var nodes = pth.split('/')
     , current = nodes.shift();
 

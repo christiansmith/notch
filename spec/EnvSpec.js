@@ -5,7 +5,6 @@ var Env = require('../lib/env')
   , prompt = require('prompt')
   , fs = require('fs');
 
-
 describe('Env', function() {
   beforeEach(function() {
     files = {
