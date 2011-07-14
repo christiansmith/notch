@@ -5,6 +5,61 @@ var Env = require('../lib/env')
   , prompt = require('prompt')
   , fs = require('fs');
 
+
+describe('Conventional Env', function() {
+  var files, listings;
+
+  beforeEach(function() {
+    files = {
+      '/project/config.json': JSON.stringify({}),
+      '/project/ddoc.js': config.ddocs.app,
+      '/project/apps/blog/ddoc.js': config.ddocs.blog,
+      '/project/apps/app/ddoc.js': config.ddocs.app
+    };
+
+    listings = {
+      '/project': ['ddoc.js'],
+      '/project/apps': ['blog', 'app']
+    }
+
+    spyOn(process, 'cwd').andReturn('/project');
+    spyOn(fs, 'readdirSync').andCallFake(function (dir) {
+      return listings[dir];      
+    });
+    spyOn(fs, 'readFileSync').andCallFake(function (file) {
+      return files[file];
+    });
+    spyOn(module.constructor, '_load').andCallFake(function (mod) {
+      return files[mod];  
+    });
+  });
+  
+  describe('loading a single app', function() {
+    beforeEach(function() {
+      conventionalEnv = new Env('config.json');
+    });
+    
+    it('should look in the project root', function() {
+      expect(conventionalEnv.ddocs.app).toBeDefined();
+    });
+  });  
+
+  describe('loading multiple apps', function() {
+    beforeEach(function() {
+      listings['/project'] = ['apps'];
+      conventionalEnv = new Env('config.json');
+    });
+    
+    it('should look in the apps directory', function() {
+      expect(conventionalEnv.ddocs.blog).toBeDefined();
+      expect(conventionalEnv.ddocs.app).toBeDefined();
+    });
+    
+  });  
+  
+});  
+
+
 describe('Env', function() {
   beforeEach(function() {
     files = {

@@ -26,6 +26,7 @@ module.exports = {
     }
   },
   ddocs: {
+    app: new DDoc('app'),
     blog: new DDoc('blog')
   },
   models: {
