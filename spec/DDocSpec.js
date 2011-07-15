@@ -1,4 +1,5 @@
 var DDoc = require('../lib/ddoc.js')
+  , jade = require('jade')
   , path = require('path')
   , fs = require('fs');
 
@@ -253,7 +254,8 @@ describe('DDoc', function () {
           'file1.js': 'Contents of file1.js',
           'subdir': {
             'file2.js': 'Contents of file2.js'
-          }
+          },
+          'file3.jade': '!!!\nhtml'
         }
       }
 
@@ -261,7 +263,14 @@ describe('DDoc', function () {
       spyOn(fs, 'statSync').andCallFake(statSync);
       spyOn(fs, 'readFileSync').andCallFake(readFileSync);
 
-      ddoc.load('dir');
+      ddoc.load('dir', {
+        operators: {
+          jade: function (content, options) {
+            var compiler = jade.compile(content);
+            return compiler(options.locals || {});
+          }
+        }
+      });
     });
 
     it('should build object chain from file path', function () {
@@ -275,6 +284,12 @@ describe('DDoc', function () {
     it('should add file contents to a ddoc property as a string', function () {
       expect(typeof ddoc.dir.subdir.file2).toEqual('string');
     });
+
+    it('should optionally process file contents', function() {
+      expect(ddoc.dir.file3).toContain('<html>');
+      expect(ddoc.dir.file3).toContain('DOCTYPE');
+    });
+    
   });  
   
 
