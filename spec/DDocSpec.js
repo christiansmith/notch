@@ -235,9 +235,9 @@ describe('DDoc', function () {
 
     it('should add filesystem contents to ddoc', function () {
       expect(ddoc.dir).toEqual({ 
-        file1: 'Contents of file1.js', 
+        'file1.js': 'Contents of file1.js', 
         subdir: {
-          file2: 'Contents of file2.js'
+          'file2.js': 'Contents of file2.js'
        }  
       });
       
@@ -263,6 +263,7 @@ describe('DDoc', function () {
       spyOn(fs, 'statSync').andCallFake(statSync);
       spyOn(fs, 'readFileSync').andCallFake(readFileSync);
 
+      /*
       ddoc.load('dir', {
         operators: {
           jade: function (content, options) {
@@ -271,6 +272,8 @@ describe('DDoc', function () {
           }
         }
       });
+      */
+      ddoc.load({modules: 'dir'});
     });
 
     it('should build object chain from file path', function () {
