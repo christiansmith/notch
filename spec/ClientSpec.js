@@ -318,6 +318,21 @@ describe('Client', function() {
         expect(written).toContain('"_rev": "1-12345"');
       });
     });
+
+    it('should add published_at if undefined', function() {
+      runs(function () {
+        var written = fs.writeFileSync.mostRecentCall.args[1];
+        expect(written).toContain('"published_at": [');
+      })
+    });
+    
+    it('should set updated_at', function() {
+      runs(function () {
+        var written = fs.writeFileSync.mostRecentCall.args[1];
+        expect(written).toContain('"updated_at": [');
+      });
+    });
+    
     
     it('should log server response', function() {
       runs(function () {
