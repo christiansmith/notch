@@ -8,7 +8,7 @@ var load = require('../lib/load')
 
 describe('type', function() {
   it('should derive type from properties', function() {
-    ['attachments', 'files', 'modules'].forEach(function (prop) {
+    ['attachments', 'files', 'modules', 'json'].forEach(function (prop) {
       options = {};
       options[prop] = 'some/path';
       expect(load.type(options)).toEqual(prop);
@@ -225,6 +225,19 @@ describe('attachment loader', function() {
     data = doc._attachments['path/to/index.html'].data;
     expected = new Buffer('<!DOCTYPE html><html><p>bar</p></html>').toString('base64');
     expect(data).toEqual(expected);
+  });
+});  
+
+describe('json loader', function() {
+  beforeEach(function() {
+    doc = {};
+    schema = JSON.stringify({ properties: { foo: { type: 'string' } } });
+    spyOn(fs, 'readFileSync').andReturn(new Buffer(schema));
+  });
+    
+  it('should parse JSON from files', function() {
+    loaders.json(doc, 'schemas/profile.json', {});
+    expect(doc.schemas.profile).toEqual(JSON.parse(schema));
   });
 });  
 
