@@ -117,17 +117,24 @@ describe('walk', function() {
         to: {
           'file.ext': 'Content of file.ext'
         }
-      }
+      },
+      'some.json': '{"foo":"bar"}'
     };
 
     spyOn(fs, 'readdirSync').andCallFake(readdirSync);
     spyOn(fs, 'statSync').andCallFake(statSync);
     
-    files = walk('path');
   });
   
   it('should make an array of filepaths', function() {
+    files = walk('path');
     expect(files[0]).toContain('path/to/file.ext');
+  });
+
+  it('should handle filespaths in addition to directories', function (){
+    files = walk('some.json');
+    expect(files[0]).toContain('some.json');
+        
   });
 });  
 
