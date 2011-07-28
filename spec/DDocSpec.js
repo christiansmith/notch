@@ -142,9 +142,6 @@ describe('DDoc', function () {
       ddoc.show('foo', fn);
     });
 
-    // both the source and the tests have duplication. 
-    // is it worth eliminating in either or both?
-
     it('should add a property to ddoc.shows', function() {
       expect(ddoc.shows.foo).toBeDefined();
     });

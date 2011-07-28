@@ -337,13 +337,6 @@ describe('load attachments', function() {
     //expect(doc._attachments['index.html'].data).toBeDefined();
   });
 
-  //
-  //
-  //
-  //
-  //
-  //
-
 });  
 
 

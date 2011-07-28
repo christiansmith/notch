@@ -489,6 +489,5 @@ describe('Client', function() {
       expect(console.log).toHaveBeenCalledWith('foo is not a known design document');
     });
   });  
-  
 
 });

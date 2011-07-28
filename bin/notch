@@ -77,15 +77,3 @@ client = new Client(env);
   ? client[command].apply(client, arguments)
   : client.info(command, options); 
 
-
-/**
-  case 'draft':
-    // ask user to use defaults? 
-    // if no, go through defaults/required and get values from prompt
-    var file = args.shift()
-      , schema = { properties: { foo: { type: 'string', default: 'bar' }}}
-      , doc = notch.Doc.spawn(schema);
-      doc.write(file);
-    break;
-
-*/

@@ -217,28 +217,6 @@ describe('Doc instance', function() {
     });
   });  
 
-  /*
-  describe('directory method', function() {
-    // what directory is the doc located in?
-    // is there a doc.type?
-  });  
-  */
-
-  /*
-  describe('filepath method', function() {
-    it('should return the default location for the document', function() {
-      // if there is an _id, filename should reflect the id?
-
-      // if there is a doc.type
-      // doc.dirpath() == PROJECTROOT / data / doc.type / 
-      
-      // if there is no doc.type
-      // doc.dirpath() == PROJECTROOT / data /
-      // ddoc.filepath() == PROJECTROOT / data / _design / _id.json
-    });
-    
-  });  
-  */
 
   describe('write method', function() {
     beforeEach(function() {
