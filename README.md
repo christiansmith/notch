@@ -1,12 +1,16 @@
-# Notch
+# Notch (Node on the Couch)
 
-Notch is a command line tool and library for building, deploying and administering CouchApps with Node.js.
+Notch is a command line tool and library for building, deploying and administering CouchApps with Node.js. 
 
 ## Install
 
 You need Node.js, npm and of course CouchDB (preferably >= 1.1) installed first.
 
-To use Notch:
+To use Notch as an executable, first install it globally:
+
+    $ npm install -g notch
+
+Then install locally as a project dependency:
 
     $ npm install notch
 

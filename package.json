@@ -8,7 +8,7 @@
   },
   "bin": { "notch": "./bin/notch" },
   "dependencies": {
-    "dateformat": ">= 1.0.1",
+    "dateformat": "1.0.1-1.2.3",
     "jade": ">= 0.12.1",
     "JSV": ">= 3.5.0",
     "mime": ">= 1.2.2",
