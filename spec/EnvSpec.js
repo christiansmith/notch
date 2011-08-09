@@ -161,6 +161,11 @@ describe('Env', function() {
       });
     });
 
+    it('should return a default model', function() {
+      expect(objEnv.getModel()).toBeTruthy();
+    });
+    
+
     it('should access schemas', function () {
       envs.forEach(function (env) {
         expect(env.getSchema('post')).toBeDefined();

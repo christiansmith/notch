@@ -4,6 +4,7 @@ var DDoc = require('../../lib/ddoc')
 var Post = Doc.extend(null, {
   schema: {
     properties: {
+      type: { type: 'string', default: 'post' },
       title: { type: 'string', default: '' },
       author: { type: 'string', default: 'some dude' }
     }
@@ -24,6 +25,10 @@ module.exports = {
       url: 'http://notch.example.com/secure',
       user: 'user'
     }
+  },
+  defaults: {
+    ddoc: 'blog',
+    model: 'post'
   },
   ddocs: {
     app: new DDoc('app'),

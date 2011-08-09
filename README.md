@@ -36,14 +36,17 @@ Commands:
 
       Copies a default or optional skeleton from ~/.notch/closet into the
       current or optional directory. Create your own project skeletons and
-      add them to the closet.
+      add them to the closet. Running init without specifying a directory 
+      or skeleton will result in the default skeleton being copied into the 
+      current directory.
 
-    push <ddoc> [-t target]
+    push [ddoc] [-t target]
 
-      Deploy a named CouchApp to a CouchDB target. If there is only one app
-      in your project, <ddoc> is "app".
+      Deploy a named CouchApp to a CouchDB target. The ddoc argument is optional.
+      If there is more than one DDoc in your project, you can specify a default
+      in config.json. If there is only one app in your project, it is the default.
 
-      $ notch push app -t production
+      $ notch push -t production
 
     draft <file> [-m model]
 

@@ -219,7 +219,7 @@ describe('Client', function() {
     it('should log message to console', function() {
       client.draft('foo', {});
       message = console.log.mostRecentCall.args[0];
-      expect(message).toContain('data/foo.json')
+      expect(message).toContain('foo.json')
       expect(message).toContain('document');
     });
 
@@ -332,8 +332,7 @@ describe('Client', function() {
         expect(written).toContain('"updated_at": [');
       });
     });
-    
-    
+
     it('should log server response', function() {
       runs(function () {
         expect(console.log.mostRecentCall.args[0]).toContain('"ok":true');
