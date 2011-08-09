@@ -378,7 +378,8 @@ describe('Client', function() {
       waits(10);
       runs(function () {
         var file = fs.writeFileSync.mostRecentCall.args[0];
-        expect(file).toContain('data/uuid-12345.json');
+        expect(file).toContain('data');
+        expect(file).toContain('uuid-12345.json');
       });
     });
 
@@ -390,6 +391,17 @@ describe('Client', function() {
       runs(function () {
         var file = fs.writeFileSync.mostRecentCall.args[0];
         expect(file).toContain('path/to/file.json');
+      });
+    });
+    
+    it('should add target to filepath', function() {
+      runs(function () {
+        client.fetch('uuid-12345', { target: 'dev' });
+      });
+      waits(10);
+      runs(function () {
+        var file = fs.writeFileSync.mostRecentCall.args[0];
+        expect(file).toContain('dev');
       });
     });
     
