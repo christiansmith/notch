@@ -48,7 +48,7 @@ Commands:
 
       $ notch push -t production
 
-    draft <file> [-m model]
+    draft <file> [-t target] [-m model]
 
       Generate a new json document and save it to a file. If a model is
       specified, draft will prompt you to use defaults from a json-schema 
@@ -60,9 +60,10 @@ Commands:
       these documents in a directory called data. The document _id and _rev
       from the server response are saved along with timestamps.
 
-    fetch <id> [-t target] [-m model]
+    fetch <id> [-t target] [-m model] [-f file]
 
-      GET a document from a target server and write it to a file.
+      GET a document from a target server and write it to a file. The file
+      path is built from target and model options if no file path is specified. 
 
     retract <file> [-t target] [-m model]
 
