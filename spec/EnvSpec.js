@@ -149,6 +149,11 @@ describe('Env', function() {
         expect(env.getDDoc('blog') instanceof DDoc).toBeTruthy();
       });
     });
+
+    it('should return a default ddoc', function() {
+      expect(env.getDDoc() instanceof DDoc).toBeTruthy();
+    });
+    
     
     it('should access models', function() {
       envs.forEach(function (env) {
