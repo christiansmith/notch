@@ -3,6 +3,7 @@ var Env = require('../lib/env')
   , DDoc = require('../lib/ddoc')
   , config = require('./shared/config')
   , prompt = require('prompt')
+  , path = require('path')
   , fs = require('fs');
 
 
@@ -11,7 +12,7 @@ describe('Conventional Env', function() {
 
   beforeEach(function() {
     files = {
-      '/project/config.json': JSON.stringify({}),
+      '/project/config.json': JSON.stringify({ targets: {}, models: {}}),
       '/project/ddoc.js': config.ddocs.app,
       '/project/apps/blog/ddoc.js': config.ddocs.blog,
       '/project/apps/app/ddoc.js': config.ddocs.app
@@ -23,6 +24,7 @@ describe('Conventional Env', function() {
     }
 
     spyOn(process, 'cwd').andReturn('/project');
+    spyOn(path, 'existsSync').andReturn(true);
     spyOn(fs, 'readdirSync').andCallFake(function (dir) {
       return listings[dir];      
     });
@@ -54,9 +56,7 @@ describe('Conventional Env', function() {
       expect(conventionalEnv.ddocs.blog).toBeDefined();
       expect(conventionalEnv.ddocs.app).toBeDefined();
     });
-    
   });  
-  
 });  
 
 
@@ -73,6 +73,12 @@ describe('Env', function() {
     };
 
     spyOn(process, 'cwd').andReturn('/project');
+
+    spyOn(path, 'existsSync').andCallFake(function (file) {
+      return (file == '/project/data/fake/post')
+        ? false
+        : true;
+    });
 
     spyOn(fs, 'readFileSync').andCallFake(function (file) {
       return files[file];  
@@ -127,7 +133,17 @@ describe('Env', function() {
     it('should load skeletons', function () {
       expect(emptyEnv.closet).toBeDefined(); 
     });
+
+    it('should build the data dir', function() {
+      spyOn(fs, 'mkdirSync');
+      config.targets['fake'] = { url: '' };
+      env = new Env(config);
+      expect(fs.mkdirSync).toHaveBeenCalledWith('/project/data/fake/post', '0755');
+      delete config.targets.fake;
+    });
+    
   });  
+
   
   describe('instance', function() {
     it('should access targets', function() {
